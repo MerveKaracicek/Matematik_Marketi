@@ -1,0 +1,28 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Soru Ekranı";
+    ViewData["BodyClass"] = "page-soru";
+}
+  <!-- Oyun alanı -->
+  <div class="game-container">
+    <div class="popup">
+      <!-- Soru -->
+      <div class="question">
+        <span class="expression">9 x (4+2) = ?</span>
+      </div>
+
+      <!-- Cevap kutusu -->
+      <div class="answer-row">
+        <span class="label">Cevap =</span>
+        <input type="text" class="answer-input" value="54">
+      </div>
+
+      <!-- Doğru/Yanlış mesajı (backend’den gelecek) -->
+      <p class="result correct">Cevabınız Doğru!</p>
+      <!-- Eğer yanlış olursa -->
+      <!-- <p class="result wrong">Cevabınız Yanlış!</p> -->
+
+      <!-- Buton -->
+      <button class="btn">TAMAM</button>
+    </div>
+  </div>

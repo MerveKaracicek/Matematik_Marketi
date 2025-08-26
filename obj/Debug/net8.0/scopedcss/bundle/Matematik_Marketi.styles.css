@@ -1,0 +1,23 @@
+/* _content/Matematik_Marketi/Views/Shared/_Layout.cshtml.rz.scp.css */
+body[b-opzpcz1gpp], html[b-opzpcz1gpp] {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Open Sans', sans-serif;
+    overflow: hidden;
+}
+
+.header[b-opzpcz1gpp], header[b-opzpcz1gpp] {
+    width: 100%;
+    height: 60px;
+    padding: 10px 20px;
+    background-color: #5C2EA5;
+    color: white;
+    box-sizing: border-box;
+    position: fixed; top:0; left:0;
+}
+.header h1[b-opzpcz1gpp], header h1[b-opzpcz1gpp] {
+    margin-top: 8px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
