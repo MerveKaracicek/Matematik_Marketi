@@ -1,9 +1,46 @@
+using Microsoft.EntityFrameworkCore;
+using Matematik_Marketi.Data;
+using Matematik_Marketi.Models.Entities;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add DbContext with SQL Server provider
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
+
+// Seed Data - ürünleri otomatik ekle
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (!context.Products.Any())
+    {
+        var products = new List<Product>
+        {
+            new Product { Name = "Süt" },
+            new Product { Name = "Peynir" },
+            new Product { Name = "Yumurta" },
+            new Product { Name = "Domates" },
+            new Product { Name = "Havuç" },
+            new Product { Name = "Salatalık" },
+            new Product { Name = "Diş Macunu" },
+            new Product { Name = "Sabun" },
+            new Product { Name = "Deterjan" },
+            new Product { Name = "Çilek" },
+            new Product { Name = "Muz" },
+            new Product { Name = "Armut" }
+        };
+
+        context.Products.AddRange(products);
+        context.SaveChanges();
+    }
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
