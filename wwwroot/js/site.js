@@ -1,12 +1,21 @@
 ﻿//ANA MENÜ -- > OYUN SAYFASI
-document.addEventListener("DOMContentLoaded",function(){
-    const startBtn=document.querySelector(".startBtn");
+document.addEventListener("DOMContentLoaded", function() {
+    const startBtn = document.querySelector(".startBtn");
     if(startBtn){
-        startBtn.addEventListener("click",function(){
-            window.location.href= '/Home/Oyun';
+        startBtn.addEventListener("click", async function() {
+            const response = await fetch('/Game/StartGame', { method: 'POST' });
+            if (!response.ok) {
+                console.error('Fetch hatası:', response.status);
+                return;
+            }
+            const data = await response.json();
+            window.location.href = '/Game/Play?gameId=' + data.gameId;
         });
     }
 });
+
+
+
 
 //OYUN SAYFASI --> ALIŞVERİŞ LİSTESİ
 document.addEventListener("DOMContentLoaded",function(){

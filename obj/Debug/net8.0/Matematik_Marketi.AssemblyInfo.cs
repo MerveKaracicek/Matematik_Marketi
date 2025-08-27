@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Matematik_Marketi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9af91073638cb32009a393cc45e151d936c791e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d5264996c7386e6810502f37b6ba98d03ace18b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Matematik_Marketi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Matematik_Marketi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
