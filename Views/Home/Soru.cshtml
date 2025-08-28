@@ -1,3 +1,4 @@
+ @model Matematik_Marketi.Models.Entities.Game
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Soru Ekranı";
@@ -23,6 +24,6 @@
       <!-- <p class="result wrong">Cevabınız Yanlış!</p> -->
 
       <!-- Buton -->
-      <button class="btn">TAMAM</button>
+      <button class="btn" data-gameid="@Model.Id">TAMAM</button>
     </div>
   </div>

@@ -42,6 +42,14 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Seed Questions
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    QuestionSeeder.SeedQuestions(dbContext);
+}
+
+
 
 
 // Configure the HTTP request pipeline.

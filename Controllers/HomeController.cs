@@ -38,15 +38,22 @@ public class HomeController : Controller  //HomeController, MVC Controller'dan t
             return Content("Alışveriş listesi bulunamadı.");
         return View(game.ShoppingList);
     }
-    public IActionResult Soru()
+    public IActionResult Soru(int gameId)
     {
-        return View();
+        var game = _gameService.GetGameWithList(gameId);
+        if (game == null)
+            return Content("Oyun bulunamadı.");
+        return View(game);
     }
-    public IActionResult Bitis()
+   
+    public IActionResult Bitis(int gameId)
     {
-        return View();
+        var game = _gameService.GetGameWithList(gameId);
+        if (game == null)
+            return Content("Oyun bulunamadı.");
+        return View(game);
     }
-
+   
     // Bu sayfa cachelenmesin diye eklenmiş.
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 
