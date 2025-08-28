@@ -1,4 +1,4 @@
- @model Matematik_Marketi.Models.Entities.Game
+ @model Matematik_Marketi.Models.Entities.GameQuestion
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Soru Ekranı";
@@ -9,7 +9,7 @@
     <div class="popup">
       <!-- Soru -->
       <div class="question">
-        <span class="expression">9 x (4+2) = ?</span>
+        <span class="expression">@Model.Question.QuestionText</span>
       </div>
 
       <!-- Cevap kutusu -->
@@ -24,6 +24,6 @@
       <!-- <p class="result wrong">Cevabınız Yanlış!</p> -->
 
       <!-- Buton -->
-      <button class="btn" data-gameid="@Model.Id">TAMAM</button>
+      <button class="btn" data-gameid="@Model.GameId" data-productid="@Model.ProductId" data-btn-type="soru-tamam">TAMAM</button>
     </div>
   </div>

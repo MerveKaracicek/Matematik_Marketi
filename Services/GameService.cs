@@ -30,7 +30,7 @@ public class GameService
         var shoppingList = new ShoppingList();
         game.ShoppingList = shoppingList;
 
-       
+
 
         _context.Games.Add(game);
         _context.SaveChanges();
@@ -43,11 +43,11 @@ public class GameService
             throw new InvalidOperationException("Yeterli ürün yok.Product tablosunda en az 3 ürün olmalı.");
         }
 
-        int upperExclusive = Math.Min(6, allProductIds.Count) + 1; 
+        int upperExclusive = Math.Min(6, allProductIds.Count) + 1;
         int count = _random.Next(3, upperExclusive);  // 3 ile 6 arasında rastgele bir sayı seç
 
         var rng = new Random();      // Listeyi karıştır
-       for (int i = allProductIds.Count - 1; i > 0; i--)
+        for (int i = allProductIds.Count - 1; i > 0; i--)
         {
             int j = rng.Next(0, i + 1);
             int temp = allProductIds[i];
@@ -71,9 +71,51 @@ public class GameService
         _context.ShoppingListItems.AddRange(items);
         _context.SaveChanges();
 
-        
+
         return game;
     }
+    // Oyun için soruları ata
+    public void AssignQuestionsToGame(int gameId)
+    {
+        // Oyun ve alışveriş listesini yükle
+        var game = _context.Games
+            .Include(g => g.ShoppingList)
+                .ThenInclude(sl => sl.Items)
+            .FirstOrDefault(g => g.Id == gameId);
+
+        if (game == null || game.ShoppingList?.Items == null) return;
+
+        // Tüm soruları al
+        var allQuestions = _context.Questions.ToList();
+        var random = new Random();
+        var gameQuestions = new List<GameQuestion>();
+
+        // Her ürün için rastgele bir soru ata, tekrarı önle
+        foreach (var item in game.ShoppingList.Items)
+        {
+            if (allQuestions.Count == 0)
+                break; // Soru kalmadıysa dur
+
+            int index = random.Next(allQuestions.Count);
+            var question = allQuestions[index];
+
+            // Seçilen soruyu listeden çıkar, tekrarlanmasın
+            allQuestions.RemoveAt(index);
+
+            gameQuestions.Add(new GameQuestion
+            {
+                GameId = game.Id,
+                ProductId = item.ProductId,
+                QuestionId = question.Id,
+                IsAnswered = false,
+                IsCorrect = false
+            });
+        }
+
+        _context.GameQuestions.AddRange(gameQuestions);
+        _context.SaveChanges();
+    }
+
 
     // Oyun bul
     public Game? GetGameById(int gameId)
@@ -81,12 +123,31 @@ public class GameService
         return _context.Games.Find(gameId);
     }
 
-      public Game? GetGameWithList(int gameId)  //Oyunla alaklı alışveriş listesini ve ürünleri getir
-        {
-            return _context.Games
-                .Include(g => g.ShoppingList)
-                    .ThenInclude(sl => sl.Items)
-                        .ThenInclude(i => i.Product)
-                .FirstOrDefault(g => g.Id == gameId);
-        }
+    public Game? GetGameWithList(int gameId)  //Oyunla alaklı alışveriş listesini ve ürünleri getir
+    {
+        return _context.Games
+            .Include(g => g.ShoppingList)
+                .ThenInclude(sl => sl.Items)
+                    .ThenInclude(i => i.Product)
+            .Include(g => g.GameQuestions)
+                .ThenInclude(gq => gq.Question)
+            .FirstOrDefault(g => g.Id == gameId);
+    }
+
+    public GameQuestion? GetGameQuestion(int gameId, int productId)
+    {
+        return _context.GameQuestions
+            .Include(gq => gq.Question)
+            .FirstOrDefault(gq => gq.GameId == gameId && gq.ProductId == productId);
+    }
+
+public GameQuestion? GetRandomQuestionForProduct(int gameId, int productId)
+{
+    return _context.GameQuestions
+                   .Include(gq => gq.Question)
+                   .Where(gq => gq.GameId == gameId && gq.ProductId == productId && !gq.IsAnswered)
+                   .OrderBy(q => Guid.NewGuid()) // rastgele
+                   .FirstOrDefault();
+}
+
 }

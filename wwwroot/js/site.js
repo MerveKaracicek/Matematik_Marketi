@@ -1,5 +1,6 @@
-﻿//ANA MENÜ -- > OYUN SAYFASI
-document.addEventListener("DOMContentLoaded", function() {
+﻿document.addEventListener("DOMContentLoaded", function() {
+
+    // ANA MENÜ --> OYUN
     const startBtn = document.querySelector(".startBtn");
     if(startBtn){
         startBtn.addEventListener("click", async function() {
@@ -12,13 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
             window.location.href = '/Game/Play?gameId=' + data.gameId;
         });
     }
-});
 
-
-
-
-//OYUN SAYFASI --> ALIŞVERİŞ LİSTESİ
-document.addEventListener("DOMContentLoaded", function() {
+    // OYUN SAYFASI --> ALIŞVERIŞ LISTESI
     const listBtn = document.querySelector(".listBtn");
     if(listBtn){
         listBtn.addEventListener("click", function() {
@@ -26,39 +22,37 @@ document.addEventListener("DOMContentLoaded", function() {
             window.location.href = '/Home/AlisverisListesi?gameId=' + gameId;
         });
     }
-});
 
+    // Tüm TAMAM butonları
+    document.querySelectorAll(".btn").forEach(function(btn){
+        const type = btn.dataset.btnType; // her butona ekle
+        btn.addEventListener("click", function(){
+            const gameId = this.dataset.gameid;
 
-//ALIŞVERİŞ LİSTESİ --> OYUN SAYFASI
-//SORU EKRANI --> OYUN SAYFASI
-//BİTİS SAYFASI --> OYUN SAYFASI
+            if(type === "soru-tamam" || type === "alisveris-tamam"){
+                window.location.href = '/Game/Play?gameId=' + gameId;
+            }
+            // Diğer türler eklenebilir
+        });
+    });
 
-document.querySelectorAll(".btn").forEach(function(btn){
-    btn.addEventListener("click", function(){
+    // OYUN SAYFASI --> SORU EKRANI (ürünler)
+ document.querySelectorAll(".product").forEach(function(btn) {
+    const productId = btn.dataset.productid;
+    if (!productId) return; // Boşsa tıklama ekleme
+
+    btn.addEventListener("click", function() {
         const gameId = this.dataset.gameid;
-        if(gameId){
-            window.location.href = '/Game/Play?gameId=' + gameId;
-        }
+        window.location.href = '/Game/Soru?gameId=' + gameId + '&productId=' + productId;
     });
 });
 
-
-//OYUN SAYFASI --> SORU EKRANI 
-document.querySelectorAll(".product").forEach(function(btn){
-    btn.addEventListener("click", function(){
-        const gameId = this.dataset.gameid; // gameId eklenmeli
-        window.location.href = '/Home/Soru?gameId=' + gameId;
-    });
-});
-
-
-//BİTİŞ EKRANI --> ANA MENÜ
-
-document.addEventListener("DOMContentLoaded",function(){
-    const cikisBtn=document.querySelector(".cikisBtn");
+    // BİTİŞ EKRANI --> ANA MENÜ
+    const cikisBtn = document.querySelector(".cikisBtn");
     if(cikisBtn){
-        cikisBtn.addEventListener("click",function(){
+        cikisBtn.addEventListener("click", function(){
             window.location.href= '/Home/AnaMenu';
         });
     }
+
 });

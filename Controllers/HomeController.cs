@@ -38,14 +38,7 @@ public class HomeController : Controller  //HomeController, MVC Controller'dan t
             return Content("Alışveriş listesi bulunamadı.");
         return View(game.ShoppingList);
     }
-    public IActionResult Soru(int gameId)
-    {
-        var game = _gameService.GetGameWithList(gameId);
-        if (game == null)
-            return Content("Oyun bulunamadı.");
-        return View(game);
-    }
-   
+    
     public IActionResult Bitis(int gameId)
     {
         var game = _gameService.GetGameWithList(gameId);

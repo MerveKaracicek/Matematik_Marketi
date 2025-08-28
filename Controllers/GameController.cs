@@ -34,16 +34,42 @@ public class GameController : Controller
     {
         int userId = 1;
         var game = _gameService.StartGame(userId);
+        _gameService.AssignQuestionsToGame(game.Id);
+
         return Json(new { gameId = game.Id });
     }
 
-public IActionResult AlisverisListesi(int gameId)
-{
-    var game = _gameService.GetGameWithList(gameId);
-    if(game == null || game.ShoppingList == null)
-        return NotFound(); // null gelirse sayfa bulunamadı
+    public IActionResult AlisverisListesi(int gameId)
+    {
+        var game = _gameService.GetGameWithList(gameId);
+        if (game == null || game.ShoppingList == null)
+            return NotFound(); // null gelirse sayfa bulunamadı
 
-    return View("~/Views/Home/AlisverisListesi.cshtml", game.ShoppingList);
+        return View("~/Views/Home/AlisverisListesi.cshtml", game.ShoppingList);
+    }
+
+     public IActionResult Soru(int gameId, int productId)
+    {
+        var gameQuestion = _gameService.GetGameQuestion(gameId, productId);
+        if (gameQuestion == null)
+            return Content("Bu ürün için soru bulunamadı.");
+            
+        if (gameQuestion == null)
+            return RedirectToAction("Play", new { gameId = gameId });
+
+
+        return View("~/Views/Home/Soru.cshtml", gameQuestion);
+    }
+   
+
+[HttpGet]
+public IActionResult GetQuestionForProduct(int gameId, int productId)
+{
+    var gameQuestion = _gameService.GetRandomQuestionForProduct(gameId, productId);
+    if(gameQuestion == null)
+        return NotFound();
+
+    return Json(new { questionId = gameQuestion.QuestionId });
 }
 
 
