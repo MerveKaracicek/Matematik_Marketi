@@ -18,14 +18,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 //OYUN SAYFASI --> ALIŞVERİŞ LİSTESİ
-document.addEventListener("DOMContentLoaded",function(){
-    const listBtn=document.querySelector(".listBtn");
+document.addEventListener("DOMContentLoaded", function() {
+    const listBtn = document.querySelector(".listBtn");
     if(listBtn){
-        listBtn.addEventListener("click",function(){
-            window.location.href= '/Home/AlisverisListesi';
+        listBtn.addEventListener("click", function() {
+            const gameId = this.dataset.gameid;
+            window.location.href = '/Home/AlisverisListesi?gameId=' + gameId;
         });
     }
 });
+
 
 //ALIŞVERİŞ LİSTESİ --> OYUN SAYFASI
 //SORU EKRANI --> OYUN SAYFASI
@@ -34,7 +36,8 @@ document.addEventListener("DOMContentLoaded",function(){
     const btn=document.querySelector(".btn");
     if(btn){
         btn.addEventListener("click",function(){
-            window.location.href= '/Home/Oyun';
+            const gameId = this.dataset.gameid;
+            window.location.href = '/Game/Play?gameId=' + gameId;
         });
     }
 });

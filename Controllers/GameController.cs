@@ -24,17 +24,30 @@ public class GameController : Controller
 
     public IActionResult Play(int gameId)
     {
-        var game = _gameService.GetGameById(gameId);
+        var game = _gameService.GetGameWithList(gameId);
         if (game == null) return NotFound();
 
-        return View("~/Views/Home/Oyun.cshtml",game);
+        return View("~/Views/Home/Oyun.cshtml", game);
     }
     [HttpPost]
-public IActionResult StartGame()
+    public IActionResult StartGame()
+    {
+        int userId = 1;
+        var game = _gameService.StartGame(userId);
+        return Json(new { gameId = game.Id });
+    }
+
+public IActionResult AlisverisListesi(int gameId)
 {
-    int userId = 1;
-    var game = _gameService.StartGame(userId);
-    return Json(new { gameId = game.Id });
+    var game = _gameService.GetGameWithList(gameId);
+    if(game == null || game.ShoppingList == null)
+        return NotFound(); // null gelirse sayfa bulunamadı
+
+    return View("~/Views/Home/AlisverisListesi.cshtml", game.ShoppingList);
 }
+
+
+
+
 
 }

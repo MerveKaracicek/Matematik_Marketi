@@ -1,16 +1,21 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Matematik_Marketi.Models;
+using Microsoft.EntityFrameworkCore;
+using Matematik_Marketi.Services;
+using Matematik_Marketi.Models.Entities;
+
 
 namespace Matematik_Marketi.Controllers;  //projenin hangi bölümünde olduğunu belirtir
 
 public class HomeController : Controller  //HomeController, MVC Controller'dan türemiş
-{
+    {private readonly GameService _gameService;
     private readonly ILogger<HomeController> _logger;  //ILogger, loglama işlemleri için kullanılır
 
-    public HomeController(ILogger<HomeController> logger)  //Constructor, HomeController oluşturulduğunda ILogger'ı alır
+    public HomeController(ILogger<HomeController> logger, GameService gameService)  //Constructor, HomeController oluşturulduğunda ILogger'ı alır
     {
         _logger = logger;
+        _gameService = gameService;
     }
 
     public IActionResult AnaMenu()  /*/Home/AnaMenu URL’si açıldığında çalışır.return View(); → Views/Home/AnaMenu.cshtml dosyasını döndürür.*/
@@ -18,13 +23,20 @@ public class HomeController : Controller  //HomeController, MVC Controller'dan t
         return View();
     }
 
-    public IActionResult Oyun()
+    public IActionResult Oyun(int gameId)
     {
-        return View();
+        var game = _gameService.GetGameWithList(gameId);
+        if (game == null)
+            return Content("Oyun bulunamadı.");
+        return View(game);
     }
-    public IActionResult AlisverisListesi()
+   
+    public IActionResult AlisverisListesi(int gameId)
     {
-        return View();
+        var game = _gameService.GetGameWithList(gameId);
+        if (game?.ShoppingList == null)
+            return Content("Alışveriş listesi bulunamadı.");
+        return View(game.ShoppingList);
     }
     public IActionResult Soru()
     {

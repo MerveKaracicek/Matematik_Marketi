@@ -1,3 +1,4 @@
+@model Matematik_Marketi.Models.Entities.Game
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Oyun Ekranı";
@@ -13,7 +14,7 @@
       <img src="/images/sepet.png" alt="Sepet">
     </div>
 
-    <button class="listBtn">
+    <button class="listBtn" data-gameid="@Model.Id">
       <img src="/images/wishlist.png" alt="Liste">
     </button>
 

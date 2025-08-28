@@ -1,3 +1,4 @@
+@model Matematik_Marketi.Models.Entities.ShoppingList
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Alışveriş Listesi";
@@ -7,11 +8,13 @@
     <div class="game-container">
         <div class="popup">
             <h2>ALIŞVERİŞ LİSTESİ</h2>
+            
             <ul>
-                <li>Havuç</li>
-                <li>Süt</li>
-                <li>Çilek</li>  
+                @foreach (var item in Model.Items)
+                {
+                    <li>@item.Product.Name</li>
+                }
             </ul>
-            <button class="btn">TAMAM</button>
+            <button class="btn" data-gameid="@Model.GameId">TAMAM</button>
         </div>
     </div>
