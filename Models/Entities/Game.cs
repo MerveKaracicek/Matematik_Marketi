@@ -14,7 +14,7 @@ namespace Matematik_Marketi.Models.Entities
     {
         public int Id { get; set; }                  // Primary Key
         public int UserId { get; set; }              // Foreign Key     
-        public int Lives { get; set; } = 3;          
+        public int Lives { get; set; } = 3;
         public GameStatus Status { get; set; } = GameStatus.InProgress;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

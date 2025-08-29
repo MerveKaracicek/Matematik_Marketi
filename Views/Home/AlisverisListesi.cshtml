@@ -9,10 +9,12 @@
         <div class="popup">
             <h2>ALIŞVERİŞ LİSTESİ</h2>
             
-            <ul>
+            <ul class="shopping-list">
                 @foreach (var item in Model.Items)
                 {
-                    <li>@item.Product.Name</li>
+                <li style="text-decoration:@(item.IsCollected ? "line-through" : "none"); opacity:@(item.IsCollected ? "0.5" : "1")">@item.Product.Name    
+                </li>
+               
                 }
             </ul>
             <button class="btn" data-gameid="@Model.GameId" data-btn-type="alisveris-tamam">TAMAM</button>

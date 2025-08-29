@@ -9,7 +9,8 @@ using Matematik_Marketi.Models.Entities;
 namespace Matematik_Marketi.Controllers;  //projenin hangi bölümünde olduğunu belirtir
 
 public class HomeController : Controller  //HomeController, MVC Controller'dan türemiş
-    {private readonly GameService _gameService;
+{
+    private readonly GameService _gameService;
     private readonly ILogger<HomeController> _logger;  //ILogger, loglama işlemleri için kullanılır
 
     public HomeController(ILogger<HomeController> logger, GameService gameService)  //Constructor, HomeController oluşturulduğunda ILogger'ı alır
@@ -30,7 +31,7 @@ public class HomeController : Controller  //HomeController, MVC Controller'dan t
             return Content("Oyun bulunamadı.");
         return View(game);
     }
-   
+
     public IActionResult AlisverisListesi(int gameId)
     {
         var game = _gameService.GetGameWithList(gameId);
@@ -38,15 +39,17 @@ public class HomeController : Controller  //HomeController, MVC Controller'dan t
             return Content("Alışveriş listesi bulunamadı.");
         return View(game.ShoppingList);
     }
-    
+
     public IActionResult Bitis(int gameId)
     {
         var game = _gameService.GetGameWithList(gameId);
         if (game == null)
             return Content("Oyun bulunamadı.");
-        return View(game);
+
+        ViewBag.GameStatus = game.Status;
+        return View("~/Views/Home/Bitis.cshtml", game);
     }
-   
+
     // Bu sayfa cachelenmesin diye eklenmiş.
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 

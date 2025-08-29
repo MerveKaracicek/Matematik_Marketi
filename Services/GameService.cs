@@ -116,50 +116,52 @@ public class GameService
         _context.SaveChanges();
     }
 
-   public bool CheckAnswer(int gameId, int productId, string userAnswer, out bool isCorrect)
-{
-    var gameQuestion = _context.GameQuestions
-        .Include(gq => gq.Question)
-        .Include(gq => gq.Game)
-            .ThenInclude(g => g.ShoppingList)
-        .Include(gq => gq.Product)
-        .FirstOrDefault(gq => gq.GameId == gameId && gq.ProductId == productId);
-        
-        
+    public bool CheckAnswer(int gameId, int productId, string userAnswer, out bool isCorrect)
+    {
+        var gameQuestion = _context.GameQuestions
+            .Include(gq => gq.Question)
+            .Include(gq => gq.Game)
+                .ThenInclude(g => g.ShoppingList)
+            .Include(gq => gq.Product)
+            .FirstOrDefault(gq => gq.GameId == gameId && gq.ProductId == productId);
 
-    if (gameQuestion == null)
+
+
+        if (gameQuestion == null)
         {
             isCorrect = false;
             return false; // soru bulunamadı
         }
 
-    gameQuestion.IsAnswered = true;
+        gameQuestion.IsAnswered = true;
 
-    if (gameQuestion.Question.CorrectAnswer == userAnswer)
-    {
-        gameQuestion.IsCorrect = true;
+        if (gameQuestion.Question.CorrectAnswer == userAnswer)
+        {
+            gameQuestion.IsCorrect = true;
 
-        var shoppingItem = _context.ShoppingListItems
-            .FirstOrDefault(sli => sli.ShoppingListId == gameQuestion.Game.ShoppingList.Id 
-                                   && sli.ProductId == productId);
-        if (shoppingItem != null)
-            shoppingItem.IsCollected = true;
+            var shoppingItem = _context.ShoppingListItems
+                .FirstOrDefault(sli => sli.ShoppingListId == gameQuestion.Game.ShoppingList.Id
+                                       && sli.ProductId == productId);
+            if (shoppingItem != null)
+                shoppingItem.IsCollected = true;
 
-        isCorrect = true;
+            isCorrect = true;
+        }
+        else
+        {
+            gameQuestion.IsCorrect = false;
+            gameQuestion.Game.Lives--;
+
+            isCorrect = false;
+        }
+
+        // En sonda tek sefer çağır
+        _context.SaveChanges();
+
+        return true;
     }
-    else
-    {
-        gameQuestion.IsCorrect = false;
-        gameQuestion.Game.Lives--;
 
-        isCorrect = false;
-    }
 
-    // En sonda tek sefer çağır
-    _context.SaveChanges();
-
-    return true;
-}
 
 
 
@@ -188,13 +190,42 @@ public class GameService
             .FirstOrDefault(gq => gq.GameId == gameId && gq.ProductId == productId);
     }
 
-public GameQuestion? GetRandomQuestionForProduct(int gameId, int productId)
-{
-    return _context.GameQuestions
-                   .Include(gq => gq.Question)
-                   .Where(gq => gq.GameId == gameId && gq.ProductId == productId && !gq.IsAnswered)
-                   .OrderBy(q => Guid.NewGuid()) // rastgele
-                   .FirstOrDefault();
+    public GameQuestion? GetRandomQuestionForProduct(int gameId, int productId)
+    {
+        return _context.GameQuestions
+                       .Include(gq => gq.Question)
+                       .Where(gq => gq.GameId == gameId && gq.ProductId == productId && !gq.IsAnswered)
+                       .OrderBy(q => Guid.NewGuid()) // rastgele
+                       .FirstOrDefault();
+    }
+    // Oyun durumunu kontrol et
+    public GameStatus CheckGameStatus(int gameId)
+    {
+        var game = _context.Games
+            .Include(g => g.ShoppingList)
+                .ThenInclude(sl => sl.Items)
+            .FirstOrDefault(g => g.Id == gameId);
+
+        if (game == null) return GameStatus.InProgress;
+
+        bool allCollected = game.ShoppingList.Items.All(i => i.IsCollected);
+        bool hasLives = game.Lives > 0;
+
+        if (allCollected && hasLives)
+        {
+            game.Status = GameStatus.Won; // Enum kullanımı
+            _context.SaveChanges();
+            return GameStatus.Won;
+        }
+        else if (!allCollected && !hasLives)
+        {
+            game.Status = GameStatus.Lost; // Enum kullanımı
+            _context.SaveChanges();
+            return GameStatus.Lost;
+        }
+
+        return GameStatus.InProgress; // Oyun devam ediyor
+    }
 }
 
-}
+

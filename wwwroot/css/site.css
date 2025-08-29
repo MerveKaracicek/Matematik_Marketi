@@ -134,6 +134,27 @@ main[role="main"] {
 .page-oyun .cheese { transform: translateY(9px); }
 .page-oyun .eggs   { transform: translateY(12px); }
 
+.hint {
+    font-size: 14px;
+    color: #d77a00;
+    font-weight: bold;
+    margin-left: 5px;
+    animation: glow 1.5s infinite;
+    
+}
+@keyframes glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; } /* Yarı şeffaf oluyor */
+}
+
+.list{
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+
 /* ===================== */
 /* ALIŞVERİŞ LİSTESİ */
 /* ===================== */

@@ -28,9 +28,9 @@ namespace Matematik_Marketi.Data
                 .HasOne(g => g.User)
                 .WithMany(u => u.Games)
                 .HasForeignKey(g => g.UserId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //1 Game → N GameQuestion 
+            //1 Game → N GameQuestion
             modelBuilder.Entity<GameQuestion>()
                 .HasOne(gq => gq.Game)
                 .WithMany(g => g.GameQuestions)
@@ -50,7 +50,7 @@ namespace Matematik_Marketi.Data
                 .HasOne(sli => sli.ShoppingList)
                 .WithMany(sl => sl.Items)
                 .HasForeignKey(sli => sli.ShoppingListId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
             //1 Product - N ShoppingListItem
             modelBuilder.Entity<ShoppingListItem>()
@@ -64,18 +64,12 @@ namespace Matematik_Marketi.Data
                 .HasOne(gq => gq.Product)
                 .WithMany()
                 .HasForeignKey(gq => gq.ProductId)
-                .OnDelete(DeleteBehavior.Restrict); 
-                
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Unique constraint on Product Name
             modelBuilder.Entity<Product>()
                 .HasIndex(p => p.Name)
                 .IsUnique();
-
-
-
-
-            
-
         }
     }
 }

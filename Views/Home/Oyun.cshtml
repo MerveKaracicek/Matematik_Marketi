@@ -6,7 +6,7 @@
 }
 
 <!-- Sol Panel -->
-  <div class="sidebar">
+  <div class="sidebar" data-lives="@Model.Lives">
 
     <div class="carts">
       <img src="/images/sepet.png" alt="Sepet">
@@ -14,9 +14,12 @@
       <img src="/images/sepet.png" alt="Sepet">
     </div>
 
+    <div class="list">
     <button class="listBtn" data-gameid="@Model.Id">
       <img src="/images/wishlist.png" alt="Liste">
-    </button>
+      </button>
+      <span class="hint">← Buraya tıkla!</span>
+    </div>
 
   </div>
 
@@ -57,4 +60,14 @@
       </div>
   </div>
   </main>
+  <script>
+    let can = @Model.Lives; // Backend’deki can sayısı
+    const hearts = document.querySelectorAll(".carts img");
+    
+    // İlk yüklemede görselleri can sayısına göre ayarla
+    hearts.forEach((h, index) => {
+        h.style.display = index < can ? "inline" : "none";
+    });
+</script>
+
 

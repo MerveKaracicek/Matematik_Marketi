@@ -73,23 +73,28 @@ public class GameController : Controller
         return Json(new { questionId = gameQuestion.QuestionId });
     }
 
-    
-
-[HttpPost]
-public IActionResult CevapKontrol([FromBody] AnswerDto dto)
-{
-    bool isCorrect;
-    bool isAnswered = _gameService.CheckAnswer(dto.GameId, dto.ProductId, dto.UserAnswer, out isCorrect);
-
-    if(isAnswered)
+    [HttpPost]
+    public IActionResult CevapKontrol([FromBody] AnswerDto dto)
     {
-        return Json(new { success = true, correct = isCorrect, productId = dto.ProductId });
+        bool isCorrect;
+        bool isAnswered = _gameService.CheckAnswer(dto.GameId, dto.ProductId, dto.UserAnswer, out isCorrect);
+
+        if (isAnswered)
+        {
+            return Json(new { success = true, correct = isCorrect, productId = dto.ProductId });
+        }
+        else
+        {
+            return Json(new { success = false, message = "Soru işleme alınamadı." });
+        }
     }
-    else
+
+    [HttpPost]
+    public IActionResult CheckGameStatus([FromBody] int gameId)
     {
-        return Json(new { success = false, message = "Soru işleme alınamadı." });
+        var status = _gameService.CheckGameStatus(gameId);
+        return Json(new { status = status.ToString() }); // "Won", "Lost", "InProgress"
     }
-}
 
 
 
