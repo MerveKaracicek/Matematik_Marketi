@@ -116,6 +116,53 @@ public class GameService
         _context.SaveChanges();
     }
 
+   public bool CheckAnswer(int gameId, int productId, string userAnswer, out bool isCorrect)
+{
+    var gameQuestion = _context.GameQuestions
+        .Include(gq => gq.Question)
+        .Include(gq => gq.Game)
+            .ThenInclude(g => g.ShoppingList)
+        .Include(gq => gq.Product)
+        .FirstOrDefault(gq => gq.GameId == gameId && gq.ProductId == productId);
+        
+        
+
+    if (gameQuestion == null)
+        {
+            isCorrect = false;
+            return false; // soru bulunamadı
+        }
+
+    gameQuestion.IsAnswered = true;
+
+    if (gameQuestion.Question.CorrectAnswer == userAnswer)
+    {
+        gameQuestion.IsCorrect = true;
+
+        var shoppingItem = _context.ShoppingListItems
+            .FirstOrDefault(sli => sli.ShoppingListId == gameQuestion.Game.ShoppingList.Id 
+                                   && sli.ProductId == productId);
+        if (shoppingItem != null)
+            shoppingItem.IsCollected = true;
+
+        isCorrect = true;
+    }
+    else
+    {
+        gameQuestion.IsCorrect = false;
+        gameQuestion.Game.Lives--;
+
+        isCorrect = false;
+    }
+
+    // En sonda tek sefer çağır
+    _context.SaveChanges();
+
+    return true;
+}
+
+
+
 
     // Oyun bul
     public Game? GetGameById(int gameId)

@@ -43,7 +43,9 @@ public class QuestionSeeder
 
         // %50 olasılıkla parantez ekle
         string expression;
-        if (random.Next(0, 2) == 1)
+        bool hasParentheses = random.Next(0, 2) == 1;
+
+        if (hasParentheses)
         {
             expression = $"{a} {op1} ({b} {op2} {c})";
         }
@@ -53,7 +55,7 @@ public class QuestionSeeder
         }
 
         // Cevabı hesapla, negatif veya bölme hatası varsa exception fırlat
-        int result = EvaluateExpression(a, b, c, op1, op2, expression.Contains("("));
+        int result = EvaluateExpression(a, b, c, op1, op2, hasParentheses);
 
         return new Question
         {
@@ -64,11 +66,12 @@ public class QuestionSeeder
 
     private static int EvaluateExpression(int a, int b, int c, string op1, string op2, bool hasParentheses)
     {
-        int inner, result;
+        int result;
 
         if (hasParentheses)
         {
-            inner = op2 switch
+            // Parantezli hesaplama
+            int inner = op2 switch
             {
                 "+" => b + c,
                 "-" when b - c >= 0 => b - c,
@@ -88,28 +91,45 @@ public class QuestionSeeder
         }
         else
         {
-            // Sıralı işlem (öncelik * ve /)
-            int first, second;
-
-            (first, second) = (op1 == "*" || op1 == "/") ? (a, b) : (b, c);
-
-            int temp1 = op1 switch
+            // Parantez yok, işlem önceliği kontrolü
+            if ((op1 == "+" || op1 == "-") && (op2 == "*" || op2 == "/"))
             {
-                "+" => a + b,
-                "-" when a - b >= 0 => a - b,
-                "*" => a * b,
-                "/" when b != 0 && a % b == 0 => a / b,
-                _ => throw new InvalidOperationException()
-            };
+                // Önce b op2 c
+                int temp = op2 switch
+                {
+                    "*" => b * c,
+                    "/" when c != 0 && b % c == 0 => b / c,
+                    _ => throw new InvalidOperationException()
+                };
 
-            result = op2 switch
+                result = op1 switch
+                {
+                    "+" => a + temp,
+                    "-" when a - temp >= 0 => a - temp,
+                    _ => throw new InvalidOperationException()
+                };
+            }
+            else
             {
-                "+" => temp1 + c,
-                "-" when temp1 - c >= 0 => temp1 - c,
-                "*" => temp1 * c,
-                "/" when c != 0 && temp1 % c == 0 => temp1 / c,
-                _ => throw new InvalidOperationException()
-            };
+                // Normal soldan sağa hesap
+                int temp = op1 switch
+                {
+                    "+" => a + b,
+                    "-" when a - b >= 0 => a - b,
+                    "*" => a * b,
+                    "/" when b != 0 && a % b == 0 => a / b,
+                    _ => throw new InvalidOperationException()
+                };
+
+                result = op2 switch
+                {
+                    "+" => temp + c,
+                    "-" when temp - c >= 0 => temp - c,
+                    "*" => temp * c,
+                    "/" when c != 0 && temp % c == 0 => temp / c,
+                    _ => throw new InvalidOperationException()
+                };
+            }
         }
 
         if (result < 0) throw new InvalidOperationException(); // Negatif sonuç yok

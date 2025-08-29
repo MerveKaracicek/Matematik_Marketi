@@ -15,14 +15,13 @@
       <!-- Cevap kutusu -->
       <div class="answer-row">
         <span class="label">Cevap =</span>
-        <input type="text" class="answer-input" value="54">
+        <input name ="girdi" type="text" class="answer-input" >
+        <button class="submitAnswer" data-gameid="@Model.GameId" data-productid="@Model.ProductId">Onayla</button>
       </div>
 
       <!-- Doğru/Yanlış mesajı (backend’den gelecek) -->
-      <p class="result correct">Cevabınız Doğru!</p>
-      <!-- Eğer yanlış olursa -->
-      <!-- <p class="result wrong">Cevabınız Yanlış!</p> -->
-
+      <p class="result" style= "display: none;"></p>
+     
       <!-- Buton -->
       <button class="btn" data-gameid="@Model.GameId" data-productid="@Model.ProductId" data-btn-type="soru-tamam">TAMAM</button>
     </div>

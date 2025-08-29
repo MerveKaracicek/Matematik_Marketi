@@ -303,9 +303,14 @@ main[role="main"] {
     border-radius: 3px;
     text-align: center;
 }
-.page-soru .result {
+.page-soru .answer-row .submitAnswer {
+    background-color: rgb(8,72,135);
+    color: white;
     font-weight: bold;
-    margin: 10px 0 20px 0;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; 
+    padding: 8px 20px;
 }
-.page-soru .result.correct { color: green; }
-.page-soru .result.wrong   { color: red; }

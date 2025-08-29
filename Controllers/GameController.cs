@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Matematik_Marketi.Models.Entities;
 using Matematik_Marketi.Services;
+using Matematik_Marketi.Models.Dto;
 
 namespace Matematik_Marketi.Controllers;
 
@@ -48,31 +49,47 @@ public class GameController : Controller
         return View("~/Views/Home/AlisverisListesi.cshtml", game.ShoppingList);
     }
 
-     public IActionResult Soru(int gameId, int productId)
+    public IActionResult Soru(int gameId, int productId)
     {
         var gameQuestion = _gameService.GetGameQuestion(gameId, productId);
         if (gameQuestion == null)
             return Content("Bu ürün için soru bulunamadı.");
-            
+
         if (gameQuestion == null)
             return RedirectToAction("Play", new { gameId = gameId });
 
 
         return View("~/Views/Home/Soru.cshtml", gameQuestion);
     }
-   
 
-[HttpGet]
-public IActionResult GetQuestionForProduct(int gameId, int productId)
+
+    [HttpGet]
+    public IActionResult GetQuestionForProduct(int gameId, int productId)
+    {
+        var gameQuestion = _gameService.GetRandomQuestionForProduct(gameId, productId);
+        if (gameQuestion == null)
+            return NotFound();
+
+        return Json(new { questionId = gameQuestion.QuestionId });
+    }
+
+    
+
+[HttpPost]
+public IActionResult CevapKontrol([FromBody] AnswerDto dto)
 {
-    var gameQuestion = _gameService.GetRandomQuestionForProduct(gameId, productId);
-    if(gameQuestion == null)
-        return NotFound();
+    bool isCorrect;
+    bool isAnswered = _gameService.CheckAnswer(dto.GameId, dto.ProductId, dto.UserAnswer, out isCorrect);
 
-    return Json(new { questionId = gameQuestion.QuestionId });
+    if(isAnswered)
+    {
+        return Json(new { success = true, correct = isCorrect, productId = dto.ProductId });
+    }
+    else
+    {
+        return Json(new { success = false, message = "Soru işleme alınamadı." });
+    }
 }
-
-
 
 
 
